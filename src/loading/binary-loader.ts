@@ -7,7 +7,7 @@ import { PointAttributeName, PointAttributeType } from '../point-attributes';
 import { PointCloudOctreeGeometryNode } from '../point-cloud-octree-geometry-node';
 import { Version } from '../version';
 import { GetUrlFn } from './types';
-import {XhrRequest} from './xhr-request';
+import { XhrRequest } from './xhr-request';
 
 interface AttributeData {
   attribute: {

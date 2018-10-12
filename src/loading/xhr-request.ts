@@ -1,5 +1,5 @@
 /*
-    This is a singleton class to for wrapping headers in XHR fetch requests.
+    This is a singleton class for wrapping headers in XHR fetch requests.
  */
 export class XhrRequest
 {
@@ -12,7 +12,7 @@ export class XhrRequest
         this.headers = new Headers();
     }
 
-    public static get Instance()
+    private static get Instance()
     {
         return this.instance || (this.instance = new this());
     }

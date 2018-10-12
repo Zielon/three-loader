@@ -8,7 +8,7 @@ import { PointCloudOctreeGeometry } from './point-cloud-octree-geometry';
 import { IPointCloudTreeNode } from './types';
 import { createChildAABB } from './utils/bounds';
 import { getIndexFromName } from './utils/utils';
-import {XhrRequest} from './loading/xhr-request';
+import { XhrRequest } from './loading/xhr-request';
 
 export interface NodeData {
   children: number;

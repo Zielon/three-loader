@@ -68,12 +68,7 @@ function parse(url: string, getUrl: GetUrlFn) {
 
     const pco = new PointCloudOctreeGeometry(loader, boundingBox, tightBoundingBox, offset);
 
-    if (data.octreeDir.indexOf('http') === 0) {
-        pco.octreeDir = data.octreeDir;
-    } else {
-        pco.octreeDir = `${url}/../${data.octreeDir}`;
-    }
-
+    pco.octreeDir = data.octreeDir.indexOf('http') === 0 ? data.octreeDir : `${url}/../${data.octreeDir}`;
     pco.url = url;
     pco.needsUpdate = true;
     pco.spacing = data.spacing;
