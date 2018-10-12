@@ -8,7 +8,6 @@ import { PointCloudOctreeGeometry } from './point-cloud-octree-geometry';
 import { IPointCloudTreeNode } from './types';
 import { createChildAABB } from './utils/bounds';
 import { getIndexFromName } from './utils/utils';
-import { XhrRequest } from './loading/xhr-request';
 
 export interface NodeData {
   children: number;
@@ -179,7 +178,7 @@ export class PointCloudOctreeGeometryNode extends EventDispatcher implements IPo
     }
 
     return Promise.resolve(this.pcoGeometry.loader.getUrl(this.getHierarchyUrl()))
-      .then(url => XhrRequest.fetch(url))
+      .then(url => this.pcoGeometry.xhrRequest(url, { mode: 'cors' }))
       .then(res => res.arrayBuffer())
       .then(data => this.loadHierarchy(this, data));
   }
