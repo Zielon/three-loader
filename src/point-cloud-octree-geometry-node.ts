@@ -8,6 +8,7 @@ import { PointCloudOctreeGeometry } from './point-cloud-octree-geometry';
 import { IPointCloudTreeNode } from './types';
 import { createChildAABB } from './utils/bounds';
 import { getIndexFromName } from './utils/utils';
+import {XhrRequest} from './loading/xhr-request';
 
 export interface NodeData {
   children: number;
@@ -178,11 +179,12 @@ export class PointCloudOctreeGeometryNode extends EventDispatcher implements IPo
     }
 
     return Promise.resolve(this.pcoGeometry.loader.getUrl(this.getHierarchyUrl()))
-      .then(url => fetch(url, { mode: 'cors' }))
+      .then(url => XhrRequest.fetch(url))
       .then(res => res.arrayBuffer())
       .then(data => this.loadHierarchy(this, data));
   }
 
+  /**
   /**
    * Gets the url of the folder where the hierarchy is, relative to the octreeDir.
    */
@@ -217,7 +219,7 @@ export class PointCloudOctreeGeometryNode extends EventDispatcher implements IPo
 
       // From the last bit, all the way to the 8th one from the right.
       let mask = 1;
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 8 && offset + 1 < buffer.byteLength; i++) {
         if ((stackNodeData.children & mask) !== 0) {
           const nodeData = this.getNodeData(stackNodeData.name + i, offset, view);
 
@@ -228,10 +230,6 @@ export class PointCloudOctreeGeometryNode extends EventDispatcher implements IPo
         }
 
         mask = mask * 2;
-      }
-
-      if (offset === buffer.byteLength) {
-        break;
       }
     }
 

@@ -7,6 +7,7 @@ import { PointAttributeName, PointAttributeType } from '../point-attributes';
 import { PointCloudOctreeGeometryNode } from '../point-cloud-octree-geometry-node';
 import { Version } from '../version';
 import { GetUrlFn } from './types';
+import {XhrRequest} from './xhr-request';
 
 interface AttributeData {
   attribute: {
@@ -73,7 +74,7 @@ export class BinaryLoader {
     }
 
     return Promise.resolve(this.getUrl(this.getNodeUrl(node)))
-      .then(url => fetch(url, { mode: 'cors' }))
+      .then(url => XhrRequest.fetch(url))
       .then(res => res.arrayBuffer())
       .then(buffer => this.parse(node, buffer));
   }
