@@ -10,7 +10,7 @@ import { createChildAABB } from '../utils/bounds';
 import { getIndexFromName } from '../utils/utils';
 import { Version } from '../version';
 import { BinaryLoader } from './binary-loader';
-import { GetUrlFn } from './types';
+import { GetUrlFn, XhrRequest } from './types';
 
 interface BoundingBoxData {
   lx: number;
@@ -43,7 +43,7 @@ interface POCJson {
  *    Function which receives the relative URL of a point cloud chunk file which is to be loaded
  *    and shoud return a new url (e.g. signed) in the form of a string or a promise.
  *
- * @param xhrRequest A request for each point cloud separate request.
+ * @param xhrRequest A request for each point cloud separate fetch.
  *
  * @returns
  *    An observable which emits once when the first LOD of the point cloud is loaded.
@@ -56,7 +56,7 @@ export function loadPOC(url: string, getUrl: GetUrlFn, xhrRequest = fetch): Prom
   });
 }
 
-function parse(url: string, getUrl: GetUrlFn, xhrRequest = fetch) {
+function parse(url: string, getUrl: GetUrlFn, xhrRequest: XhrRequest) {
   return (data: POCJson): Promise<PointCloudOctreeGeometry> => {
     const { offset, boundingBox, tightBoundingBox } = getBoundingBoxes(data);
 

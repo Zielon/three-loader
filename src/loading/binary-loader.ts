@@ -77,7 +77,10 @@ export class BinaryLoader {
     }
 
     return Promise.resolve(this.getUrl(this.getNodeUrl(node)))
-      .then(url => this.xhrRequest(url, { mode: 'cors' }))
+      .then(url => {
+          // @ts-ignore
+          return this.xhrRequest.bind()(url, { mode: 'cors' });
+      })
       .then(res => res.arrayBuffer())
       .then(buffer => this.parse(node, buffer));
   }
@@ -144,7 +147,7 @@ export class BinaryLoader {
   }
 
   private getWorker(): Worker {
-    let worker = this.workers.pop();
+    const worker = this.workers.pop();
     if (worker) {
       return worker;
     }
