@@ -186,7 +186,6 @@ export class PointCloudOctreeGeometryNode extends EventDispatcher implements IPo
   }
 
   /**
-  /**
    * Gets the url of the folder where the hierarchy is, relative to the octreeDir.
    */
   private getHierarchyBaseUrl(): string {

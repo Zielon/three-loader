@@ -90,7 +90,6 @@ function parse(url: string, getUrl: GetUrlFn, xhrRequest: XhrRequest) {
         }
 
         pco.nodes = nodes;
-
         return pco;
     });
   };
