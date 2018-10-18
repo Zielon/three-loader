@@ -85,13 +85,12 @@ function parse(url: string, getUrl: GetUrlFn, xhrRequest: XhrRequest) {
 
     return loadRoot(pco, data, nodes, version).then(() => {
 
-        if (version.upTo('1.4')) {
+        if (version.upTo('1.4'))
             loadRemainingHierarchy(pco, data, nodes);
-        }
 
         pco.nodes = nodes;
         return pco;
-    });
+    };
   };
 }
 
