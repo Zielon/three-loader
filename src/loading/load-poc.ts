@@ -48,9 +48,9 @@ interface POCJson {
  * @returns
  *    An observable which emits once when the first LOD of the point cloud is loaded.
  */
-export function loadPOC(url: string, getUrl: GetUrlFn, xhrRequest = fetch): Promise<PointCloudOctreeGeometry> {
+export function loadPOC(url: string, getUrl: GetUrlFn, xhrRequest: XhrRequest): Promise<PointCloudOctreeGeometry> {
   return Promise.resolve(getUrl(url)).then(transformedUrl => {
-    return xhrRequest(transformedUrl, { mode: 'cors' })
+    return (xhrRequest.bind(null)(transformedUrl, { mode: 'cors' }) as Promise<Response>)
         .then(res => res.json())
         .then(parse(transformedUrl, getUrl, xhrRequest));
   });
