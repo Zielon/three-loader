@@ -1,7 +1,7 @@
 import {
   AdditiveBlending,
-  AlwaysDepth,
   Color,
+  LessEqualDepth,
   NearestFilter,
   NoBlending,
   RawShaderMaterial,
@@ -187,8 +187,8 @@ export class PointCloudMaterial extends RawShaderMaterial {
     filterByNormalThreshold: makeUniform('f', 0)
   };
 
-  @uniform('bbSize', true) bbSize!: [number, number, number]; // prettier-ignore
-  @uniform('depthMap', true) depthMap!: Texture | null; // prettier-ignore
+  @uniform('bbSize') bbSize!: [number, number, number]; // prettier-ignore
+  @uniform('depthMap') depthMap!: Texture | null; // prettier-ignore
   @uniform('far') far!: number; // prettier-ignore
   @uniform('fov') fov!: number; // prettier-ignore
   @uniform('heightMax') heightMax!: number; // prettier-ignore
@@ -206,10 +206,10 @@ export class PointCloudMaterial extends RawShaderMaterial {
   @uniform('rgbGamma', true) rgbGamma!: number; // prettier-ignore
   @uniform('screenHeight') screenHeight!: number; // prettier-ignore
   @uniform('screenWidth') screenWidth!: number; // prettier-ignore
-  @uniform('size', true) size!: number; // prettier-ignore
+  @uniform('size') size!: number; // prettier-ignore
   @uniform('spacing') spacing!: number; // prettier-ignore
   @uniform('transition') transition!: number; // prettier-ignore
-  @uniform('uColor', true) color!: Color; // prettier-ignore
+  @uniform('uColor') color!: Color; // prettier-ignore
   @uniform('wClassification') weightClassification!: number; // prettier-ignore
   @uniform('wElevation') weightElevation!: number; // prettier-ignore
   @uniform('wIntensity') weightIntensity!: number; // prettier-ignore
@@ -275,12 +275,12 @@ export class PointCloudMaterial extends RawShaderMaterial {
       this.transparent = false;
       this.depthTest = true;
       this.depthWrite = true;
+      this.depthFunc = LessEqualDepth;
     } else if (this.opacity < 1.0 && !this.useEDL) {
       this.blending = AdditiveBlending;
       this.transparent = true;
       this.depthTest = false;
       this.depthWrite = true;
-      this.depthFunc = AlwaysDepth;
     }
 
     if (this.weighted) {
@@ -288,6 +288,7 @@ export class PointCloudMaterial extends RawShaderMaterial {
       this.transparent = true;
       this.depthTest = true;
       this.depthWrite = false;
+      this.depthFunc = LessEqualDepth;
     }
 
     this.needsUpdate = true;
@@ -442,10 +443,8 @@ export class PointCloudMaterial extends RawShaderMaterial {
 
     if (uObj.type === 'c') {
       (uObj.value as Color).copy(value as Color);
-      this.needsUpdate = true;
     } else if (value !== uObj.value) {
       uObj.value = value;
-      this.needsUpdate = true;
     }
   }
 }
@@ -482,15 +481,15 @@ function uniform<K extends keyof IPointCloudMaterialUniforms>(
 
 function requiresShaderUpdate() {
   return (target: Object, propertyKey: string | symbol): void => {
-    let pValue: any;
+    const fieldName = "_" + propertyKey.toString();
 
     Object.defineProperty(target, propertyKey, {
       get() {
-        return pValue;
+        return this[fieldName];
       },
       set(value: any) {
-        if (value !== pValue) {
-          pValue = value;
+        if (value !== this[fieldName]) {
+          this[fieldName] = value;
           this.updateShaderSource();
         }
       },
