@@ -24,6 +24,7 @@ export interface IPointCloudTreeNode {
 export interface IVisibilityUpdateResult {
   visibleNodes: IPointCloudTreeNode[];
   numVisiblePoints: number;
+  exceededMaxLoadsToGPU: boolean;
 }
 
 export interface IPotree {
