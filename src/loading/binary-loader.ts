@@ -93,8 +93,15 @@ export class BinaryLoader {
     return url;
   }
 
-  private parse(node: PointCloudOctreeGeometryNode, buffer: ArrayBuffer): void {
+  private parse(node: PointCloudOctreeGeometryNode, buffer: ArrayBuffer): Promise<void> {
+    return new Promise((resolve) => {
+      this._parse(node, buffer, resolve);
+    });
+  }
+
+  private _parse(node: PointCloudOctreeGeometryNode, buffer: ArrayBuffer, resolve: () => void) {
     if (this.disposed) {
+      resolve();
       return;
     }
 
@@ -109,6 +116,7 @@ export class BinaryLoader {
 
     worker.onmessage = (e: WorkerResponse) => {
       if (this.disposed) {
+        resolve();
         return;
       }
 
@@ -125,12 +133,14 @@ export class BinaryLoader {
       node.tightBoundingBox = this.getTightBoundingBox(data.tightBoundingBox);
       node.loaded = true;
       node.loading = false;
+      node.failed = false;
       node.pcoGeometry.numNodesLoading--;
       node.pcoGeometry.needsUpdate = true;
 
       this.releaseWorker(worker);
 
       this.callbacks.forEach(callback => callback(node));
+      resolve();
     };
 
     const message = {
