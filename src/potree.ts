@@ -151,6 +151,7 @@ export class Potree implements IPotree {
           pointCloud.visibleGeometry.push(node);
         } else {
           failed = true;
+          continue;
         }
       }
 
@@ -174,15 +175,17 @@ export class Potree implements IPotree {
     } // end priority queue loop
 
     const numNodesToLoad = Math.min(this.maxNumNodesLoading, unloadedGeometry.length);
+    const promises: Promise<void>[] = [];
     for (let i = 0; i < numNodesToLoad; i++) {
-      unloadedGeometry[i].load();
+      promises.push(unloadedGeometry[i].load());
     }
 
     return {
       visibleNodes: visibleNodes,
       numVisiblePoints: numVisiblePoints,
       exceededMaxLoadsToGPU: exceededMaxLoadsToGPU,
-      failed: failed
+      failed: failed,
+      promises: promises
     };
   }
 

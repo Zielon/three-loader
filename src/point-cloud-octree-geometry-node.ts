@@ -163,7 +163,7 @@ export class PointCloudOctreeGeometryNode extends EventDispatcher implements IPo
       this.loading = false;
       this.failed = true;
       this.pcoGeometry.numNodesLoading--;
-      return Promise.reject(reason);
+      throw reason;
     });
   }
 
