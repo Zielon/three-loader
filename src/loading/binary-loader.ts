@@ -125,6 +125,7 @@ export class BinaryLoader {
       node.tightBoundingBox = this.getTightBoundingBox(data.tightBoundingBox);
       node.loaded = true;
       node.loading = false;
+      node.failed = false;
       node.pcoGeometry.numNodesLoading--;
       node.pcoGeometry.needsUpdate = true;
 
