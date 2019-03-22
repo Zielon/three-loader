@@ -27,6 +27,7 @@ export declare class PointCloudOctreeGeometryNode extends EventDispatcher implem
     geometry: BufferGeometry;
     loaded: boolean;
     loading: boolean;
+    failed: boolean;
     parent: PointCloudOctreeGeometryNode | null;
     oneTimeDisposeHandlers: (() => void)[];
     isLeafNode: boolean;
