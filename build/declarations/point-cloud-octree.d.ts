@@ -1,4 +1,4 @@
-import { Box3, Object3D, PerspectiveCamera, Ray, Sphere, WebGLRenderer } from 'three';
+import { Box3, Object3D, PerspectiveCamera, Ray, Scene, Sphere, Vector3, WebGLRenderer, WebGLRenderTarget } from 'three';
 import { PointCloudMaterial, PointSizeType } from './materials';
 import { PointCloudOctreeGeometry } from './point-cloud-octree-geometry';
 import { PointCloudOctreeGeometryNode } from './point-cloud-octree-geometry-node';
@@ -8,6 +8,16 @@ import { IPointCloudTreeNode, IPotree, PickPoint } from './types';
 export interface PickParams {
     pickWindowSize: number;
     pickOutsideClipRegion: boolean;
+    /**
+     * In the case of custom pixel position coordinates, this property
+     * will be used for the pick window position.
+     */
+    pixelPos: Vector3;
+}
+export interface IPickState {
+    renderTarget: WebGLRenderTarget;
+    material: PointCloudMaterial;
+    scene: Scene;
 }
 export declare class PointCloudOctree extends PointCloudTree {
     potree: IPotree;
@@ -18,6 +28,9 @@ export declare class PointCloudOctree extends PointCloudTree {
     material: PointCloudMaterial;
     level: number;
     maxLevel: number;
+    /**
+     * The minimum radius of a node's bounding sphere on the screen in order to be displayed.
+     */
     minNodePixelSize: number;
     root: IPointCloudTreeNode | null;
     boundingBoxNodes: Object3D[];
@@ -25,9 +38,9 @@ export declare class PointCloudOctree extends PointCloudTree {
     visibleGeometry: PointCloudOctreeGeometryNode[];
     numVisiblePoints: number;
     showBoundingBox: boolean;
+    pickState: IPickState | undefined;
     private visibleBounds;
     private visibleNodeTextureOffsets;
-    private pickState;
     constructor(potree: IPotree, pcoGeometry: PointCloudOctreeGeometry, material?: PointCloudMaterial);
     private initMaterial;
     dispose(): void;
