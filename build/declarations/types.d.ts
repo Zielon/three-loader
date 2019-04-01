@@ -28,11 +28,11 @@ export interface IVisibilityUpdateResult {
     /**
      * True when at least one node in view has failed to load.
      */
-    failed: boolean;
+    nodeLoadFailed: boolean;
     /**
      * Promises for loading nodes, will reject when loading fails.
      */
-    promises: Promise<void>[];
+    nodeLoadPromises: Promise<void>[];
 }
 export interface IPotree {
     pointBudget: number;

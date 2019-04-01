@@ -13,6 +13,12 @@ export interface PickParams {
      * will be used for the pick window position.
      */
     pixelPos: Vector3;
+    /**
+     * For a custom configuration of render target and pick material
+     * @param material The pick material
+     * @param target The render target for picking
+     */
+    pickConfiguration: (material: PointCloudMaterial, target: WebGLRenderTarget) => void;
 }
 export interface IPickState {
     renderTarget: WebGLRenderTarget;

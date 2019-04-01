@@ -23,7 +23,6 @@ export declare class BinaryLoader {
     load(node: PointCloudOctreeGeometryNode): Promise<void>;
     private getNodeUrl;
     private parse;
-    private _parse;
     private getWorker;
     private releaseWorker;
     private getTightBoundingBox;
