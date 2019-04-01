@@ -110,7 +110,7 @@ export class Potree implements IPotree {
 
     let loadedToGPUThisFrame = 0;
     let exceededMaxLoadsToGPU = false;
-    let failed = false;
+    let nodeLoadFailed = false;
     let queueItem: QueueItem | undefined;
 
     while ((queueItem = priorityQueue.pop()) !== undefined) {
@@ -150,7 +150,7 @@ export class Potree implements IPotree {
           unloadedGeometry.push(node);
           pointCloud.visibleGeometry.push(node);
         } else {
-          failed = true;
+          nodeLoadFailed = true;
           continue;
         }
       }
@@ -175,17 +175,17 @@ export class Potree implements IPotree {
     } // end priority queue loop
 
     const numNodesToLoad = Math.min(this.maxNumNodesLoading, unloadedGeometry.length);
-    const promises: Promise<void>[] = [];
+    const nodeLoadPromises: Promise<void>[] = [];
     for (let i = 0; i < numNodesToLoad; i++) {
-      promises.push(unloadedGeometry[i].load());
+      nodeLoadPromises.push(unloadedGeometry[i].load());
     }
 
     return {
       visibleNodes: visibleNodes,
       numVisiblePoints: numVisiblePoints,
       exceededMaxLoadsToGPU: exceededMaxLoadsToGPU,
-      failed: failed,
-      promises: promises
+      nodeLoadFailed: nodeLoadFailed,
+      nodeLoadPromises: nodeLoadPromises,
     };
   }
 
@@ -237,7 +237,7 @@ export class Potree implements IPotree {
         projectionFactor = halfHeight / (slope * distance);
       } else {
         const orthographic = camera as OrthographicCamera;
-        projectionFactor = 2 * halfHeight / (orthographic.top - orthographic.bottom)
+        projectionFactor = (2 * halfHeight) / (orthographic.top - orthographic.bottom);
       }
 
       const screenPixelRadius = radius * projectionFactor;

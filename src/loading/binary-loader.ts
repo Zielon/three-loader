@@ -81,7 +81,9 @@ export class BinaryLoader {
     return Promise.resolve(this.getUrl(this.getNodeUrl(node)))
       .then(url => this.xhrRequest(url, { mode: 'cors' }))
       .then(res => res.arrayBuffer())
-      .then(buffer => this.parse(node, buffer));
+      .then(buffer => {
+        return new Promise(resolve => this.parse(node, buffer, resolve));
+      });
   }
 
   private getNodeUrl(node: PointCloudOctreeGeometryNode): string {
@@ -93,13 +95,11 @@ export class BinaryLoader {
     return url;
   }
 
-  private parse(node: PointCloudOctreeGeometryNode, buffer: ArrayBuffer): Promise<void> {
-    return new Promise((resolve) => {
-      this._parse(node, buffer, resolve);
-    });
-  }
-
-  private _parse(node: PointCloudOctreeGeometryNode, buffer: ArrayBuffer, resolve: () => void) {
+  private parse(
+    node: PointCloudOctreeGeometryNode,
+    buffer: ArrayBuffer,
+    resolve: () => void,
+  ): void {
     if (this.disposed) {
       resolve();
       return;
